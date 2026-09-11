@@ -1,0 +1,5 @@
+package com.vexsa.wealth.common;
+
+public enum TransactionType {
+    INCOME, EXPENSE, SAVINGS_CONTRIBUTION, SAVINGS_WITHDRAWAL, DEBT_PAYMENT, DEBT_ADJUSTMENT, ASSET_ADJUSTMENT
+}
