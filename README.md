@@ -212,3 +212,4 @@ what you want changed, and point out (or let Claude find) which page/screen it's
   rebuild the exact same structure on any machine.
 - **Currency formatting:** Indian digit grouping (₹1,00,000) and compact Lakh/Crore
   notation (₹1.5L, ₹2.3Cr) on chart axes.
+# WealthManagement
