@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -47,8 +48,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException ignored) {
-            // invalid/expired token: leave request unauthenticated, downstream security rules will reject it
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException | UsernameNotFoundException ignored) {
+            // Invalid/expired token, or a well-formed token for a user that no longer exists
+            // (e.g. the database was reset since the browser last logged in) — leave the
+            // request unauthenticated in both cases so the standard 401 flow (and the
+            // frontend's "log in again" redirect) handles it, rather than this surfacing
+            // as an unrelated-looking failure deep inside some other feature.
         }
 
         filterChain.doFilter(request, response);
