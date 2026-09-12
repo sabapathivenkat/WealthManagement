@@ -32,16 +32,34 @@ export default function CategorySelect({
     setArchived(all.filter((c) => !c.active));
   }
 
+  // A category created/renamed/archived/restored in one CategorySelect (e.g. the Budget
+  // form's picker) needs to show up in every other CategorySelect of the same kind on the
+  // same page (e.g. the Expense form's picker) without a full reload — there's no shared
+  // store, so a plain window event is the simplest way to fan that out to every mounted instance.
   useEffect(() => {
     load();
     if (showArchived) loadArchived();
+
+    function onChanged(e: Event) {
+      const detail = (e as CustomEvent<{ kind: CategoryKind }>).detail;
+      if (detail?.kind !== kind) return;
+      load();
+      if (showArchived) loadArchived();
+    }
+    window.addEventListener("categories-changed", onChanged);
+    return () => window.removeEventListener("categories-changed", onChanged);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, refreshKey]);
+  }, [kind, refreshKey, showArchived]);
+
+  function notifyChanged() {
+    window.dispatchEvent(new CustomEvent("categories-changed", { detail: { kind } }));
+  }
 
   async function handleAdd() {
     if (!nameInput.trim()) return;
     const created = await categoryApi.create({ name: nameInput.trim(), kind });
     await load();
+    notifyChanged();
     onChange(String(created.id));
     setNameInput("");
     setMode("view");
@@ -51,6 +69,7 @@ export default function CategorySelect({
     if (!value || !nameInput.trim()) return;
     await categoryApi.update(Number(value), { name: nameInput.trim(), kind });
     await load();
+    notifyChanged();
     setNameInput("");
     setMode("view");
   }
@@ -66,6 +85,7 @@ export default function CategorySelect({
     if (!ok) return;
     await categoryApi.archive(Number(value));
     await load();
+    notifyChanged();
     if (showArchived) await loadArchived();
     onChange("");
   }
@@ -73,6 +93,7 @@ export default function CategorySelect({
   async function handleRestore(id: number) {
     await categoryApi.restore(id);
     await load();
+    notifyChanged();
     await loadArchived();
   }
 

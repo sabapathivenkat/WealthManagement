@@ -46,7 +46,15 @@ export default function MonthPicker({
     function place() {
       const rect = rootRef.current?.getBoundingClientRect();
       if (!rect) return;
-      setCoords({ top: rect.bottom + 8, left: rect.left, width: rect.width });
+      // Flip above the trigger when there isn't room below, and clamp horizontally — see the
+      // matching comment in DatePicker.tsx for why this matters (fixed-position popover).
+      const estimatedHeight = 300;
+      const estimatedWidth = Math.max(rect.width, 240);
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const top =
+        spaceBelow >= estimatedHeight + 8 ? rect.bottom + 8 : Math.max(8, rect.top - estimatedHeight - 8);
+      const left = Math.min(Math.max(rect.left, 8), window.innerWidth - estimatedWidth - 8);
+      setCoords({ top, left, width: rect.width });
     }
     place();
     window.addEventListener("resize", place);

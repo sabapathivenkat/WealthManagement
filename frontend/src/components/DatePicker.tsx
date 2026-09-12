@@ -58,7 +58,16 @@ export default function DatePicker({
     function place() {
       const rect = rootRef.current?.getBoundingClientRect();
       if (!rect) return;
-      setCoords({ top: rect.bottom + 8, left: rect.left, width: rect.width });
+      // Flip above the trigger when there isn't room below, and clamp horizontally, so the
+      // popover (position: fixed, so page scroll can't bring an off-screen one back into view)
+      // never renders somewhere the user can't reach — e.g. a trigger near the bottom of a tall page.
+      const estimatedHeight = 380;
+      const estimatedWidth = Math.max(rect.width, 260);
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const top =
+        spaceBelow >= estimatedHeight + 8 ? rect.bottom + 8 : Math.max(8, rect.top - estimatedHeight - 8);
+      const left = Math.min(Math.max(rect.left, 8), window.innerWidth - estimatedWidth - 8);
+      setCoords({ top, left, width: rect.width });
     }
     place();
     window.addEventListener("resize", place);

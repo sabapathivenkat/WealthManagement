@@ -118,13 +118,23 @@ export default function DebtPlanner() {
             </div>
             <div className="stat-tile">
               <span>Months saved vs. minimum-only</span>
-              <strong>{smartPlan.monthsSaved > 0 ? smartPlan.monthsSaved : "—"}</strong>
+              <strong>
+                {smartPlan.baseline.totalMonths < 1200 ? (smartPlan.monthsSaved > 0 ? smartPlan.monthsSaved : "—") : "N/A*"}
+              </strong>
             </div>
             <div className="stat-tile">
               <span>Interest saved</span>
-              <strong>{formatCurrency(smartPlan.interestSaved)}</strong>
+              <strong>{smartPlan.baseline.totalMonths < 1200 ? formatCurrency(smartPlan.interestSaved) : "—"}</strong>
             </div>
           </div>
+
+          {smartPlan.baseline.totalMonths >= 1200 && (
+            <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+              * Without the extra payment, one or more of these debts has no minimum payment/EMI set and would never
+              pay itself off, so "months/interest saved" isn't a meaningful comparison here — the debt-free date above
+              still reflects the automatic plan correctly.
+            </p>
+          )}
 
           <table className="data-table">
             <thead>

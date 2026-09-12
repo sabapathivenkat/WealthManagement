@@ -9,6 +9,7 @@ import com.vexsa.wealth.dashboard.dto.DashboardResponse;
 import com.vexsa.wealth.dashboard.dto.TrendPoint;
 import com.vexsa.wealth.dashboard.dto.YearlySummaryResponse;
 import com.vexsa.wealth.debt.Debt;
+import com.vexsa.wealth.debt.DebtPayoffSimulator;
 import com.vexsa.wealth.debt.DebtRepository;
 import com.vexsa.wealth.debt.DebtService;
 import com.vexsa.wealth.debt.DebtStatus;
@@ -65,7 +66,13 @@ public class DashboardService {
 
         LocalDate debtFreeDate = null;
         if (debts.stream().anyMatch(d -> d.getStatus() == DebtStatus.ACTIVE)) {
-            debtFreeDate = debtService.payoffPlan(BigDecimal.ZERO).avalanche().payoffDate();
+            var avalanche = debtService.payoffPlan(BigDecimal.ZERO).avalanche();
+            // If a debt has no minimum payment/EMI set, the zero-extra-payment simulation never
+            // converges and hits the simulator's 100-year safety cap — that sentinel date isn't
+            // a real estimate, so leave debtFreeDate null (shown as "—") rather than displaying it.
+            if (avalanche.totalMonths() < DebtPayoffSimulator.MAX_MONTHS) {
+                debtFreeDate = avalanche.payoffDate();
+            }
         }
 
         BigDecimal emergencyFund = accounts.stream()
