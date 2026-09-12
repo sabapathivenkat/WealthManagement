@@ -212,7 +212,15 @@ what you want changed, and point out (or let Claude find) which page/screen it's
   rebuild the exact same structure on any machine.
 - **Currency formatting:** Indian digit grouping (₹1,00,000) and compact Lakh/Crore
   notation (₹1.5L, ₹2.3Cr) on chart axes.
-# WealthManagement
-# WealthManagement
-# WealthManagement
-# WealthManagement
+
+---
+
+## 9. Putting it online (e.g. Vercel)
+
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for the full step-by-step guide. In short: Vercel
+can only host the **frontend** (it doesn't run long-lived Java servers or databases) — the
+**backend** and its database need a separate host (the guide uses Render, which has a free
+tier). If signup/login silently fails on a deployed site with no visible error, this is
+almost always why: the frontend has been deployed but the backend it's trying to talk to
+either isn't deployed anywhere, or the deployed backend isn't allowing that frontend's
+address through CORS. DEPLOYMENT.md walks through both.
