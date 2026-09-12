@@ -9,12 +9,18 @@ export default function CategorySelect({
   onChange,
   required,
   refreshKey,
+  onPendingChange,
 }: {
   kind: CategoryKind;
   value: string;
   onChange: (id: string) => void;
   required?: boolean;
   refreshKey?: unknown;
+  /** Fires true while the user is mid-way through creating/renaming a category (the picker
+   * swaps to a name-input row) and false once that resolves — so the surrounding form can
+   * disable its own Save/Add button and avoid the easy mistake of submitting with no
+   * category selected because the new one was never actually confirmed. */
+  onPendingChange?: (pending: boolean) => void;
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [archived, setArchived] = useState<Category[]>([]);
@@ -22,6 +28,11 @@ export default function CategorySelect({
   const [nameInput, setNameInput] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const confirm = useConfirm();
+
+  useEffect(() => {
+    onPendingChange?.(mode !== "view");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   async function load() {
     setCategories(await categoryApi.list(kind));
@@ -129,12 +140,17 @@ export default function CategorySelect({
         </div>
         <div className="category-select-toolbar">
           <button type="button" onClick={mode === "adding" ? handleAdd : handleRename}>
-            Save
+            {mode === "adding" ? "Create category" : "Save name"}
           </button>
           <button type="button" className="ghost" onClick={() => setMode("view")}>
             Cancel
           </button>
         </div>
+        <p className="category-select-hint">
+          {mode === "adding"
+            ? `Click "Create category" (or press Enter) first — the form below won't submit until this is done.`
+            : `Click "Save name" (or press Enter) to confirm the rename.`}
+        </p>
       </div>
     );
   }

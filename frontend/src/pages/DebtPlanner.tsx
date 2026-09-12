@@ -30,31 +30,44 @@ export default function DebtPlanner() {
   const [snowball, setSnowball] = useState<StrategyResult | null>(null);
   const [custom, setCustom] = useState<StrategyResult | null>(null);
   const [noExtraMonths, setNoExtraMonths] = useState<Record<PayoffStrategy, number> | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const extra = Number(extraPayment) || 0;
 
   useEffect(() => {
-    debtApi.recommendation().then(setRecommendation);
-    debtApi.smartPlan().then(setSmartPlan);
-    debtApi.payoffPlan(0).then((plan) => {
-      debtApi.customPlan(0).then((c) => {
-        setNoExtraMonths({
-          AVALANCHE: plan.avalanche.totalMonths,
-          SNOWBALL: plan.snowball.totalMonths,
-          CUSTOM: c.totalMonths,
-        });
-      });
-    });
-  }, []);
+    setLoadError(false);
+    setSmartPlan(null);
+    Promise.all([
+      debtApi.recommendation().then(setRecommendation),
+      debtApi.smartPlan().then(setSmartPlan),
+      debtApi.payoffPlan(0).then((plan) =>
+        debtApi.customPlan(0).then((c) => {
+          setNoExtraMonths({
+            AVALANCHE: plan.avalanche.totalMonths,
+            SNOWBALL: plan.snowball.totalMonths,
+            CUSTOM: c.totalMonths,
+          });
+        }),
+      ),
+    ]).catch(() => setLoadError(true));
+  }, [reloadKey]);
 
   useEffect(() => {
     if (!exploreOpen) return;
-    debtApi.payoffPlan(extra).then((plan) => {
-      setAvalanche(plan.avalanche);
-      setSnowball(plan.snowball);
-    });
-    debtApi.customPlan(extra).then(setCustom);
+    debtApi
+      .payoffPlan(extra)
+      .then((plan) => {
+        setAvalanche(plan.avalanche);
+        setSnowball(plan.snowball);
+      })
+      .catch(() => {});
+    debtApi.customPlan(extra).then(setCustom).catch(() => {});
   }, [extra, exploreOpen]);
+
+  function retry() {
+    setReloadKey((k) => k + 1);
+  }
 
   function openExplorer() {
     if (!exploreOpen && smartPlan) {
@@ -81,9 +94,20 @@ export default function DebtPlanner() {
         <h1>Yearly Debt Settlement Plan</h1>
       </div>
 
-      {!smartPlan && <p className="empty-state">Loading your automatic plan…</p>}
+      {loadError && (
+        <div className="empty-state">
+          <p>Could not load your debt plan — the server may be temporarily unavailable.</p>
+          <button type="button" onClick={retry}>
+            Retry
+          </button>
+        </div>
+      )}
 
-      {smartPlan && !hasDebt && <p className="empty-state">No active debts to plan for yet — add one on the Debt page.</p>}
+      {!loadError && !smartPlan && <p className="empty-state">Loading your automatic plan…</p>}
+
+      {!loadError && smartPlan && !hasDebt && (
+        <p className="empty-state">No active debts to plan for yet — add one on the Debt page.</p>
+      )}
 
       {smartPlan && hasDebt && plan && (
         <div className="card" style={{ borderTop: "3px solid var(--brand)" }}>

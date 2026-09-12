@@ -20,11 +20,14 @@ export default function Settings() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    settingsApi.get().then((s) => {
-      setSettings(s);
-      setCurrencyInput(s.currency);
-      setFyStartInput(String(s.fyStartMonth));
-    });
+    settingsApi
+      .get()
+      .then((s) => {
+        setSettings(s);
+        setCurrencyInput(s.currency);
+        setFyStartInput(String(s.fyStartMonth));
+      })
+      .catch(() => setError("Could not load your preferences — please refresh the page."));
   }, []);
 
   async function save(next: UserSettings) {
@@ -157,9 +160,9 @@ export default function Settings() {
             </div>
           </div>
           {saved && <p style={{ color: "var(--status-good)", fontSize: 13 }}>Saved</p>}
-          {error && <p className="form-error">{error}</p>}
         </div>
       )}
+      {error && <p className="form-error">{error}</p>}
     </div>
   );
 }

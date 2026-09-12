@@ -31,6 +31,7 @@ export default function DebtSection({ onChanged }: { onChanged?: () => void }) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [categoryRefresh, setCategoryRefresh] = useState(0);
+  const [categoryPending, setCategoryPending] = useState(false);
   const [payingId, setPayingId] = useState<number | null>(null);
   const [payAmount, setPayAmount] = useState("");
   const [payDate, setPayDate] = useState(today());
@@ -189,6 +190,7 @@ export default function DebtSection({ onChanged }: { onChanged?: () => void }) {
               value={form.debtCategoryId}
               onChange={(id) => setForm((f) => ({ ...f, debtCategoryId: id }))}
               refreshKey={categoryRefresh}
+              onPendingChange={setCategoryPending}
               required
             />
           </div>
@@ -323,7 +325,9 @@ export default function DebtSection({ onChanged }: { onChanged?: () => void }) {
         </details>
 
         <div className="form-actions">
-          <button type="submit">{editingId ? "Update debt" : "Add debt"}</button>
+          <button type="submit" disabled={categoryPending}>
+            {editingId ? "Update debt" : "Add debt"}
+          </button>
           {editingId && (
             <button type="button" onClick={resetForm}>
               Cancel

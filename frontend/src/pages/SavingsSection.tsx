@@ -15,6 +15,7 @@ export default function SavingsSection({ onChanged }: { onChanged?: () => void }
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [categoryRefresh, setCategoryRefresh] = useState(0);
+  const [categoryPending, setCategoryPending] = useState(false);
   const [txnFor, setTxnFor] = useState<{ id: number; mode: "contribute" | "withdraw" } | null>(null);
   const [txnAmount, setTxnAmount] = useState("");
   const [txnDate, setTxnDate] = useState(today());
@@ -162,6 +163,7 @@ export default function SavingsSection({ onChanged }: { onChanged?: () => void }
               value={form.categoryId}
               onChange={(id) => setForm((f) => ({ ...f, categoryId: id }))}
               refreshKey={categoryRefresh}
+              onPendingChange={setCategoryPending}
               required
             />
           </div>
@@ -203,7 +205,9 @@ export default function SavingsSection({ onChanged }: { onChanged?: () => void }
           </div>
         </div>
         <div className="form-actions">
-          <button type="submit">{editingId ? "Update" : "Add"}</button>
+          <button type="submit" disabled={categoryPending}>
+            {editingId ? "Update" : "Add"}
+          </button>
           {editingId && (
             <button type="button" onClick={resetForm}>
               Cancel

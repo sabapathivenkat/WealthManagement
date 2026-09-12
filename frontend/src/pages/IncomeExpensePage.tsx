@@ -20,6 +20,7 @@ export default function IncomeExpensePage({
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [categoryRefresh, setCategoryRefresh] = useState(0);
+  const [categoryPending, setCategoryPending] = useState(false);
 
   const [from, to] = useMemo(() => monthBounds(month), [month]);
 
@@ -118,6 +119,7 @@ export default function IncomeExpensePage({
               value={form.categoryId}
               onChange={(id) => setForm((f) => ({ ...f, categoryId: id }))}
               refreshKey={categoryRefresh}
+              onPendingChange={setCategoryPending}
               required
             />
           </div>
@@ -149,7 +151,9 @@ export default function IncomeExpensePage({
           </div>
         </div>
         <div className="form-actions">
-          <button type="submit">{editingId ? "Update" : "Add"}</button>
+          <button type="submit" disabled={categoryPending}>
+            {editingId ? "Update" : "Add"}
+          </button>
           {editingId && (
             <button type="button" onClick={resetForm}>
               Cancel

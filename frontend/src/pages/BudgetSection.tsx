@@ -13,6 +13,7 @@ export default function BudgetSection({ month }: { month: string }) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [categoryRefresh, setCategoryRefresh] = useState(0);
+  const [categoryPending, setCategoryPending] = useState(false);
 
   useEffect(() => {
     if (period === "MONTH") setPeriodValue(month);
@@ -85,7 +86,14 @@ export default function BudgetSection({ month }: { month: string }) {
         <div className="form-grid">
           <div className="field">
             <label>Category</label>
-            <CategorySelect kind="EXPENSE" value={categoryId} onChange={setCategoryId} refreshKey={categoryRefresh} required />
+            <CategorySelect
+              kind="EXPENSE"
+              value={categoryId}
+              onChange={setCategoryId}
+              refreshKey={categoryRefresh}
+              onPendingChange={setCategoryPending}
+              required
+            />
           </div>
           <div className="field">
             <label htmlFor="budget-amount">Planned amount (₹)</label>
@@ -101,7 +109,9 @@ export default function BudgetSection({ month }: { month: string }) {
           </div>
         </div>
         <div className="form-actions">
-          <button type="submit">{editingId ? "Update budget" : "Set budget"}</button>
+          <button type="submit" disabled={categoryPending}>
+            {editingId ? "Update budget" : "Set budget"}
+          </button>
           {editingId && (
             <button type="button" onClick={resetForm}>
               Cancel

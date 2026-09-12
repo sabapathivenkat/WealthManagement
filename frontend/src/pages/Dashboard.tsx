@@ -35,14 +35,31 @@ export default function Dashboard() {
   const [fyStart, setFyStart] = useState(currentFinancialYear());
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [yearly, setYearly] = useState<YearlySummaryResponse | null>(null);
+  const [monthError, setMonthError] = useState(false);
+  const [yearError, setYearError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    if (view === "MONTH") dashboardApi.summary(month).then(setData);
-  }, [view, month]);
+    if (view !== "MONTH") return;
+    setMonthError(false);
+    dashboardApi
+      .summary(month)
+      .then(setData)
+      .catch(() => setMonthError(true));
+  }, [view, month, reloadKey]);
 
   useEffect(() => {
-    if (view === "YEAR") dashboardApi.yearly(fyStart).then(setYearly);
-  }, [view, fyStart]);
+    if (view !== "YEAR") return;
+    setYearError(false);
+    dashboardApi
+      .yearly(fyStart)
+      .then(setYearly)
+      .catch(() => setYearError(true));
+  }, [view, fyStart, reloadKey]);
+
+  function retry() {
+    setReloadKey((k) => k + 1);
+  }
 
   const fyLabel = `FY ${fyStart}-${String((fyStart + 1) % 100).padStart(2, "0")}`;
 
@@ -76,7 +93,14 @@ export default function Dashboard() {
       </div>
 
       {view === "MONTH" &&
-        (!data ? (
+        (monthError ? (
+          <div className="empty-state">
+            <p>Could not load the dashboard — the server may be temporarily unavailable.</p>
+            <button type="button" onClick={retry}>
+              Retry
+            </button>
+          </div>
+        ) : !data ? (
           <p className="empty-state">Loading…</p>
         ) : (
           <>
@@ -246,7 +270,14 @@ export default function Dashboard() {
         ))}
 
       {view === "YEAR" &&
-        (!yearly ? (
+        (yearError ? (
+          <div className="empty-state">
+            <p>Could not load the dashboard — the server may be temporarily unavailable.</p>
+            <button type="button" onClick={retry}>
+              Retry
+            </button>
+          </div>
+        ) : !yearly ? (
           <p className="empty-state">Loading…</p>
         ) : (
           <>
