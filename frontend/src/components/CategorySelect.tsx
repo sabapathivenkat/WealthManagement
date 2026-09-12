@@ -27,7 +27,13 @@ export default function CategorySelect({
   const [mode, setMode] = useState<"view" | "adding" | "editing">("view");
   const [nameInput, setNameInput] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const confirm = useConfirm();
+
+  function messageFor(err: unknown, fallback: string): string {
+    const response = (err as { response?: { data?: { message?: string } } })?.response;
+    return response?.data?.message ?? fallback;
+  }
 
   useEffect(() => {
     onPendingChange?.(mode !== "view");
@@ -35,12 +41,20 @@ export default function CategorySelect({
   }, [mode]);
 
   async function load() {
-    setCategories(await categoryApi.list(kind));
+    try {
+      setCategories(await categoryApi.list(kind));
+    } catch {
+      setError("Could not load categories — please check your connection and refresh.");
+    }
   }
 
   async function loadArchived() {
-    const all = await categoryApi.list(kind, true);
-    setArchived(all.filter((c) => !c.active));
+    try {
+      const all = await categoryApi.list(kind, true);
+      setArchived(all.filter((c) => !c.active));
+    } catch {
+      setError("Could not load removed categories — please try again.");
+    }
   }
 
   // A category created/renamed/archived/restored in one CategorySelect (e.g. the Budget
@@ -68,21 +82,31 @@ export default function CategorySelect({
 
   async function handleAdd() {
     if (!nameInput.trim()) return;
-    const created = await categoryApi.create({ name: nameInput.trim(), kind });
-    await load();
-    notifyChanged();
-    onChange(String(created.id));
-    setNameInput("");
-    setMode("view");
+    setError(null);
+    try {
+      const created = await categoryApi.create({ name: nameInput.trim(), kind });
+      await load();
+      notifyChanged();
+      onChange(String(created.id));
+      setNameInput("");
+      setMode("view");
+    } catch (err) {
+      setError(messageFor(err, "Could not create the category — please try again."));
+    }
   }
 
   async function handleRename() {
     if (!value || !nameInput.trim()) return;
-    await categoryApi.update(Number(value), { name: nameInput.trim(), kind });
-    await load();
-    notifyChanged();
-    setNameInput("");
-    setMode("view");
+    setError(null);
+    try {
+      await categoryApi.update(Number(value), { name: nameInput.trim(), kind });
+      await load();
+      notifyChanged();
+      setNameInput("");
+      setMode("view");
+    } catch (err) {
+      setError(messageFor(err, "Could not rename the category — please try again."));
+    }
   }
 
   async function handleRemove() {
@@ -94,18 +118,28 @@ export default function CategorySelect({
       danger: true,
     });
     if (!ok) return;
-    await categoryApi.archive(Number(value));
-    await load();
-    notifyChanged();
-    if (showArchived) await loadArchived();
-    onChange("");
+    setError(null);
+    try {
+      await categoryApi.archive(Number(value));
+      await load();
+      notifyChanged();
+      if (showArchived) await loadArchived();
+      onChange("");
+    } catch (err) {
+      setError(messageFor(err, "Could not remove the category — please try again."));
+    }
   }
 
   async function handleRestore(id: number) {
-    await categoryApi.restore(id);
-    await load();
-    notifyChanged();
-    await loadArchived();
+    setError(null);
+    try {
+      await categoryApi.restore(id);
+      await load();
+      notifyChanged();
+      await loadArchived();
+    } catch (err) {
+      setError(messageFor(err, "Could not restore the category — please try again."));
+    }
   }
 
   function startRename() {
@@ -151,6 +185,7 @@ export default function CategorySelect({
             ? `Click "Create category" (or press Enter) first — the form below won't submit until this is done.`
             : `Click "Save name" (or press Enter) to confirm the rename.`}
         </p>
+        {error && <p className="form-error">{error}</p>}
       </div>
     );
   }
@@ -198,6 +233,7 @@ export default function CategorySelect({
           ))}
         </div>
       )}
+      {error && <p className="form-error">{error}</p>}
     </div>
   );
 }
