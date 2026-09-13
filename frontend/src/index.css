@@ -105,24 +105,24 @@ body::after {
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --surface-1: rgba(34, 32, 66, 0.45);
-    --surface-2: rgba(34, 32, 66, 0.3);
-    --surface-solid: #1a1836;
+    --surface-1: rgba(50, 46, 92, 0.62);
+    --surface-2: rgba(50, 46, 92, 0.42);
+    --surface-solid: #211d40;
     --page-plane: #0a0918;
     --text-primary: #f2f1fb;
     --text-secondary: #bcb9dd;
     --text-muted: #8783ad;
-    --gridline: rgba(255, 255, 255, 0.07);
-    --border: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(160, 150, 255, 0.2);
-    --brand: #6c63ff;
-    --brand-strong: #4e46e0;
-    --accent-gold: #b47ef5;
-    --ambient-3: #4d7dff;
-    --series-1: #6c63ff;
-    --series-2: #e07ef0;
-    --status-good: #35b768;
-    --status-critical: #e56b6b;
+    --gridline: rgba(255, 255, 255, 0.14);
+    --border: rgba(255, 255, 255, 0.13);
+    --glass-border: rgba(170, 160, 255, 0.28);
+    --brand: #7c72ff;
+    --brand-strong: #5b51f5;
+    --accent-gold: #c98cff;
+    --ambient-3: #4d8dff;
+    --series-1: #7c9bff;
+    --series-2: #f591ff;
+    --status-good: #3ddb82;
+    --status-critical: #ff7a7a;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(200, 190, 255, 0.1);
     --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(200, 190, 255, 0.14);
     --blob-strength: 42%;
@@ -133,24 +133,24 @@ body::after {
    prefers-color-scheme block above because it's a plain selector applied after it. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface-1: rgba(34, 32, 66, 0.55);
-  --surface-2: rgba(34, 32, 66, 0.4);
-  --surface-solid: #1a1836;
+  --surface-1: rgba(50, 46, 92, 0.72);
+  --surface-2: rgba(50, 46, 92, 0.5);
+  --surface-solid: #211d40;
   --page-plane: #0a0918;
   --text-primary: #f2f1fb;
   --text-secondary: #bcb9dd;
   --text-muted: #8783ad;
-  --gridline: rgba(255, 255, 255, 0.07);
-  --border: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(160, 150, 255, 0.2);
-  --brand: #6c63ff;
-  --brand-strong: #4e46e0;
-  --accent-gold: #b47ef5;
-  --ambient-3: #4d7dff;
-  --series-1: #6c63ff;
-  --series-2: #e07ef0;
-  --status-good: #35b768;
-  --status-critical: #e56b6b;
+  --gridline: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.13);
+  --glass-border: rgba(170, 160, 255, 0.28);
+  --brand: #7c72ff;
+  --brand-strong: #5b51f5;
+  --accent-gold: #c98cff;
+  --ambient-3: #4d8dff;
+  --series-1: #7c9bff;
+  --series-2: #f591ff;
+  --status-good: #3ddb82;
+  --status-critical: #ff7a7a;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(200, 190, 255, 0.1);
   --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(200, 190, 255, 0.14);
 }
@@ -260,6 +260,9 @@ h2 {
 }
 
 .sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: var(--text-secondary);
   text-decoration: none;
   padding: 9px 12px;
@@ -268,6 +271,11 @@ h2 {
   font-weight: 500;
   transition: background 0.12s ease, color 0.12s ease;
   border-left: 3px solid transparent;
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .sidebar nav a:hover {
@@ -283,6 +291,9 @@ h2 {
 }
 
 .settings-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 13px;
@@ -891,6 +902,28 @@ table button:hover {
   font-weight: 500;
 }
 
+.stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-icon {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  opacity: 0.8;
+  color: var(--brand);
+}
+
+.stat-tile.income .stat-icon {
+  color: var(--status-good);
+}
+
+.stat-tile.expense .stat-icon {
+  color: var(--status-critical);
+}
+
 .stat-tile strong {
   font-size: 23px;
   font-weight: 700;
@@ -914,6 +947,27 @@ table button:hover {
 
 .stat-tile.net {
   border-top-color: var(--brand);
+}
+
+.stat-tile.accent-gold {
+  border-top-color: var(--accent-gold);
+}
+.stat-tile.accent-gold .stat-icon {
+  color: var(--accent-gold);
+}
+
+.stat-tile.accent-blue {
+  border-top-color: var(--series-1);
+}
+.stat-tile.accent-blue .stat-icon {
+  color: var(--series-1);
+}
+
+.stat-tile.accent-pink {
+  border-top-color: var(--series-2);
+}
+.stat-tile.accent-pink .stat-icon {
+  color: var(--series-2);
 }
 
 .data-table {

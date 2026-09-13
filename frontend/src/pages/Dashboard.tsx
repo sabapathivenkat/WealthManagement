@@ -18,6 +18,16 @@ import {
 import { dashboardApi } from "../api/endpoints";
 import type { DashboardResponse, YearlySummaryResponse } from "../api/types";
 import MonthPicker from "../components/MonthPicker";
+import {
+  ArrowDownCircleIcon,
+  CalendarCheckIcon,
+  CreditCardIcon,
+  PercentIcon,
+  PiggyBankIcon,
+  ShieldIcon,
+  TrendingUpIcon,
+  WalletIcon,
+} from "../components/icons";
 import { currentMonth, formatCompact, formatCurrency } from "../utils/format";
 
 const PIE_COLORS = ["var(--series-1)", "var(--series-2)", "var(--status-good)", "#a366d9", "#d9b366", "#66c2d9", "#d966a3"];
@@ -105,54 +115,54 @@ export default function Dashboard() {
         ) : (
           <>
             <div className="stat-row">
-              <div className="stat-tile">
-                <span>Total Assets</span>
+              <div className="stat-tile accent-blue">
+                <span className="stat-label"><WalletIcon className="stat-icon" />Total Assets</span>
                 <strong>{formatCurrency(data.totalAssets)}</strong>
               </div>
-              <div className="stat-tile">
-                <span>Total Debt</span>
+              <div className="stat-tile expense">
+                <span className="stat-label"><CreditCardIcon className="stat-icon" />Total Debt</span>
                 <strong>{formatCurrency(data.totalDebt)}</strong>
               </div>
               <div className={`stat-tile ${data.netWorth >= 0 ? "net" : "expense"}`}>
-                <span>Net Worth</span>
+                <span className="stat-label"><TrendingUpIcon className="stat-icon" />Net Worth</span>
                 <strong>{formatCurrency(data.netWorth)}</strong>
               </div>
             </div>
 
             <div className="stat-row">
               <div className="stat-tile income">
-                <span>Monthly Income</span>
+                <span className="stat-label"><TrendingUpIcon className="stat-icon" />Monthly Income</span>
                 <strong>{formatCurrency(data.monthlyIncome)}</strong>
               </div>
               <div className="stat-tile expense">
-                <span>Monthly Expenses</span>
+                <span className="stat-label"><ArrowDownCircleIcon className="stat-icon" />Monthly Expenses</span>
                 <strong>{formatCurrency(data.monthlyExpenses)}</strong>
               </div>
-              <div className="stat-tile">
-                <span>Monthly Savings</span>
+              <div className="stat-tile accent-gold">
+                <span className="stat-label"><PiggyBankIcon className="stat-icon" />Monthly Savings</span>
                 <strong>{formatCurrency(data.monthlySavings)}</strong>
               </div>
-              <div className="stat-tile">
-                <span>Savings Rate</span>
+              <div className="stat-tile accent-pink">
+                <span className="stat-label"><PercentIcon className="stat-icon" />Savings Rate</span>
                 <strong>{data.savingsRate}%</strong>
               </div>
             </div>
 
             <div className="stat-row">
-              <div className="stat-tile">
-                <span>Debt Paid This Month</span>
+              <div className="stat-tile income">
+                <span className="stat-label"><CreditCardIcon className="stat-icon" />Debt Paid This Month</span>
                 <strong>{formatCurrency(data.debtPaidThisMonth)}</strong>
               </div>
-              <div className="stat-tile">
-                <span>Remaining Debt</span>
+              <div className="stat-tile expense">
+                <span className="stat-label"><CreditCardIcon className="stat-icon" />Remaining Debt</span>
                 <strong>{formatCurrency(data.remainingDebt)}</strong>
               </div>
-              <div className="stat-tile">
-                <span>Est. Debt-Free Date</span>
+              <div className="stat-tile accent-blue">
+                <span className="stat-label"><CalendarCheckIcon className="stat-icon" />Est. Debt-Free Date</span>
                 <strong>{data.estimatedDebtFreeDate ?? "—"}</strong>
               </div>
-              <div className="stat-tile">
-                <span>Emergency Fund Coverage</span>
+              <div className="stat-tile accent-gold">
+                <span className="stat-label"><ShieldIcon className="stat-icon" />Emergency Fund Coverage</span>
                 <strong>{data.emergencyFundCoverageMonths} mo</strong>
               </div>
             </div>
@@ -285,41 +295,41 @@ export default function Dashboard() {
               <h2>{fyLabel} Summary</h2>
               <div className="stat-row">
                 <div className="stat-tile income">
-                  <span>Total Income</span>
+                  <span className="stat-label"><TrendingUpIcon className="stat-icon" />Total Income</span>
                   <strong>{formatCurrency(yearly.totalIncome)}</strong>
                 </div>
                 <div className="stat-tile expense">
-                  <span>Total Expenses</span>
+                  <span className="stat-label"><ArrowDownCircleIcon className="stat-icon" />Total Expenses</span>
                   <strong>{formatCurrency(yearly.totalExpenses)}</strong>
                 </div>
                 <div className="stat-tile">
-                  <span>Savings Contributions</span>
+                  <span className="stat-label"><PiggyBankIcon className="stat-icon" />Savings Contributions</span>
                   <strong>{formatCurrency(yearly.totalSavingsContributions)}</strong>
                 </div>
                 <div className="stat-tile">
-                  <span>Debt Repaid</span>
+                  <span className="stat-label"><CreditCardIcon className="stat-icon" />Debt Repaid</span>
                   <strong>{formatCurrency(yearly.totalDebtRepaid)}</strong>
                 </div>
               </div>
               <div className="stat-row">
-                <div className="stat-tile">
-                  <span>Beginning → Ending Assets</span>
+                <div className="stat-tile accent-blue">
+                  <span className="stat-label"><WalletIcon className="stat-icon" />Beginning → Ending Assets</span>
                   <strong>
                     {formatCompact(yearly.beginningAssets)} → {formatCompact(yearly.endingAssets)}
                   </strong>
                 </div>
-                <div className="stat-tile">
-                  <span>Beginning → Ending Debt</span>
+                <div className="stat-tile expense">
+                  <span className="stat-label"><CreditCardIcon className="stat-icon" />Beginning → Ending Debt</span>
                   <strong>
                     {formatCompact(yearly.beginningDebt)} → {formatCompact(yearly.endingDebt)}
                   </strong>
                 </div>
                 <div className={`stat-tile ${yearly.netWorthGrowth >= 0 ? "net" : "expense"}`}>
-                  <span>Net Worth Growth</span>
+                  <span className="stat-label"><TrendingUpIcon className="stat-icon" />Net Worth Growth</span>
                   <strong>{formatCurrency(yearly.netWorthGrowth)}</strong>
                 </div>
-                <div className="stat-tile">
-                  <span>Savings Rate / Debt Reduction</span>
+                <div className="stat-tile accent-pink">
+                  <span className="stat-label"><PercentIcon className="stat-icon" />Savings Rate / Debt Reduction</span>
                   <strong>
                     {yearly.savingsRate}% / {yearly.debtReductionPercent}%
                   </strong>

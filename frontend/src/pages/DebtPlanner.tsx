@@ -179,23 +179,30 @@ export default function DebtPlanner() {
             </tbody>
           </table>
 
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={plan.monthlySchedule} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke="var(--gridline)" vertical={false} />
-              <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
-              <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(v) => formatCompact(Number(v))} />
-              <Tooltip formatter={(v) => formatCurrency(Number(v))} labelFormatter={(m) => `Month ${m}`} />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="totalRemainingBalance"
-                name={STRATEGY_LABELS[smartPlan.chosenStrategy]}
-                stroke="var(--series-1)"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          {plan.totalMonths < 1200 ? (
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={plan.monthlySchedule} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                <CartesianGrid stroke="var(--gridline)" vertical={false} />
+                <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
+                <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(v) => formatCompact(Number(v))} />
+                <Tooltip formatter={(v) => formatCurrency(Number(v))} labelFormatter={(m) => `Month ${m}`} />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="totalRemainingBalance"
+                  name={STRATEGY_LABELS[smartPlan.chosenStrategy]}
+                  stroke="var(--series-1)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="empty-state">
+              Chart hidden — even with the suggested extra payment this doesn't converge within 100 years. Add a
+              minimum payment/EMI on the debt shown above.
+            </p>
+          )}
 
           <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 12 }}>
             This plan updates automatically as your income, expenses, and debt balances change — nothing here is
@@ -320,23 +327,30 @@ export default function DebtPlanner() {
                   </tbody>
                 </table>
 
-                <ResponsiveContainer width="100%" height={260}>
-                  <LineChart data={active.monthlySchedule} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                    <CartesianGrid stroke="var(--gridline)" vertical={false} />
-                    <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
-                    <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(v) => formatCompact(Number(v))} />
-                    <Tooltip formatter={(v) => formatCurrency(Number(v))} labelFormatter={(m) => `Month ${m}`} />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="totalRemainingBalance"
-                      name={STRATEGY_LABELS[strategy]}
-                      stroke="var(--series-1)"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                {active.totalMonths < 1200 ? (
+                  <ResponsiveContainer width="100%" height={260}>
+                    <LineChart data={active.monthlySchedule} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                      <CartesianGrid stroke="var(--gridline)" vertical={false} />
+                      <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
+                      <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(v) => formatCompact(Number(v))} />
+                      <Tooltip formatter={(v) => formatCurrency(Number(v))} labelFormatter={(m) => `Month ${m}`} />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="totalRemainingBalance"
+                        name={STRATEGY_LABELS[strategy]}
+                        stroke="var(--series-1)"
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="empty-state">
+                    Chart hidden — this plan doesn't converge within 100 years, so the axis would be unreadable. Fix the
+                    debt's minimum payment/EMI, or add an extra payment above, to see the payoff curve.
+                  </p>
+                )}
               </>
             )}
           </div>

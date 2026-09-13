@@ -11,14 +11,17 @@ interface GlassState {
 const GlassContext = createContext<GlassState | undefined>(undefined);
 
 const DEFAULT_LIGHT_OPACITY = 66;
-const DEFAULT_DARK_OPACITY = 45;
+// Raised from 45: at low opacity the dark-mode surface tint barely lifted off the near-black
+// page background, so cards/sidebar visually blended into the page instead of reading as
+// distinct panels — see the "flat/muddy, low card-vs-background contrast" feedback.
+const DEFAULT_DARK_OPACITY = 62;
 
 // Base tint colors each theme's glass surfaces are built from — kept in sync with the
 // defaults in index.css. The opacity sliders scale the alpha channel of these at runtime.
 const LIGHT_SURFACE_RGB = "255, 255, 255";
 const LIGHT_BORDER_RGB = "255, 255, 255";
-const DARK_SURFACE_RGB = "34, 32, 66";
-const DARK_BORDER_RGB = "160, 150, 255";
+const DARK_SURFACE_RGB = "50, 46, 92";
+const DARK_BORDER_RGB = "170, 160, 255";
 
 function readStored(key: string, fallback: number): number {
   const raw = localStorage.getItem(key);
