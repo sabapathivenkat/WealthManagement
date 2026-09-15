@@ -105,16 +105,16 @@ body::after {
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --surface-1: rgba(50, 46, 92, 0.62);
-    --surface-2: rgba(50, 46, 92, 0.42);
-    --surface-solid: #211d40;
-    --page-plane: #0a0918;
-    --text-primary: #f2f1fb;
-    --text-secondary: #bcb9dd;
-    --text-muted: #8783ad;
-    --gridline: rgba(255, 255, 255, 0.14);
+    --surface-1: rgba(24, 24, 27, 0.6);
+    --surface-2: rgba(24, 24, 27, 0.4);
+    --surface-solid: #131315;
+    --page-plane: #030303;
+    --text-primary: #f4f4f6;
+    --text-secondary: #b8b8c2;
+    --text-muted: #86868f;
+    --gridline: rgba(255, 255, 255, 0.12);
     --border: rgba(255, 255, 255, 0.13);
-    --glass-border: rgba(170, 160, 255, 0.28);
+    --glass-border: rgba(255, 255, 255, 0.16);
     --brand: #7c72ff;
     --brand-strong: #5b51f5;
     --accent-gold: #c98cff;
@@ -123,9 +123,9 @@ body::after {
     --series-2: #f591ff;
     --status-good: #3ddb82;
     --status-critical: #ff7a7a;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(200, 190, 255, 0.1);
-    --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(200, 190, 255, 0.14);
-    --blob-strength: 42%;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --blob-strength: 26%;
   }
 }
 
@@ -133,16 +133,16 @@ body::after {
    prefers-color-scheme block above because it's a plain selector applied after it. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface-1: rgba(50, 46, 92, 0.72);
-  --surface-2: rgba(50, 46, 92, 0.5);
-  --surface-solid: #211d40;
-  --page-plane: #0a0918;
-  --text-primary: #f2f1fb;
-  --text-secondary: #bcb9dd;
-  --text-muted: #8783ad;
-  --gridline: rgba(255, 255, 255, 0.14);
+  --surface-1: rgba(24, 24, 27, 0.68);
+  --surface-2: rgba(24, 24, 27, 0.46);
+  --surface-solid: #131315;
+  --page-plane: #030303;
+  --text-primary: #f4f4f6;
+  --text-secondary: #b8b8c2;
+  --text-muted: #86868f;
+  --gridline: rgba(255, 255, 255, 0.12);
   --border: rgba(255, 255, 255, 0.13);
-  --glass-border: rgba(170, 160, 255, 0.28);
+  --glass-border: rgba(255, 255, 255, 0.16);
   --brand: #7c72ff;
   --brand-strong: #5b51f5;
   --accent-gold: #c98cff;
@@ -151,8 +151,8 @@ body::after {
   --series-2: #f591ff;
   --status-good: #3ddb82;
   --status-critical: #ff7a7a;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(200, 190, 255, 0.1);
-  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(200, 190, 255, 0.14);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 :root[data-theme="light"] {
